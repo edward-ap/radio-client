@@ -1,0 +1,29 @@
+# Go
+bin/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage*
+
+# IDE
+.idea/
+.vscode/
+
+# Fyne
+fyne-cross/
+fyne.png
+
+# OS
+.DS_Store
+Thumbs.db
+
+# App binary
+miniradio.exe
+libvlc.dll
+libvlccore.dll
+/plugins/
+/third_party/

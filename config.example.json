@@ -1,0 +1,78 @@
+{
+  "currentUrl": "https://stream.laut.fm/synthwave",
+  "volume": 68,
+  "muted": false,
+  "lastPreset": 1,
+  "presets": [
+    {
+      "name": "Synthwave FM",
+      "url": "https://stream.laut.fm/synthwave",
+      "eq": "Flat"
+    },
+    {
+      "name": "Groove Salad",
+      "url": "https://ice2.somafm.com/groovesalad-128-aac",
+      "eq": "Manual",
+      "metadataType": "icy"
+    },
+    {
+      "name": "BBC Radio 6",
+      "url": "https://stream.live.vc.bbcmedia.co.uk/bbc_6music",
+      "eq": "Off"
+    },
+    {
+      "name": "NTS 1",
+      "url": "https://stream-relay-geo.ntslive.net/stream",
+      "eq": "Manual",
+      "metadataUrl": "https://www.nts.live/api/v2/live"
+    },
+    {
+      "name": "NPR News",
+      "url": "https://npr-ice.streamguys1.com/live.mp3",
+      "eq": "Flat"
+    },
+    {
+      "name": "KEXP 90.3 FM",
+      "url": "https://live-aacplus-64.kexp.org/kexp64.aac",
+      "eq": "Flat"
+    },
+    {
+      "name": "Lofi Girl",
+      "url": "https://stream.lfg.horizonradio.net/lofi",
+      "eq": "Manual"
+    },
+    {
+      "name": "Jazz24",
+      "url": "https://live.wostreaming.net/direct/ppm-jazz24aac-64",
+      "eq": "Off"
+    },
+    {
+      "name": "Radio Paradise",
+      "url": "https://stream.radioparadise.com/aac-320",
+      "eq": "Manual"
+    },
+    {
+      "name": "Empty Slot",
+      "url": "",
+      "eq": "Off"
+    }
+  ],
+  "windowW": 920,
+  "windowH": 32,
+  "windowX": 120,
+  "windowY": 120,
+  "windowPosValid": true,
+  "apiEndpoint": "https://de1.api.radio-browser.info",
+  "customEqPresets": [
+    {
+      "name": "Soft Bass Boost",
+      "preamp": -1.0,
+      "bands": [2.0, 1.5, 1.0, 0.5, 0.0, 0.0, -0.5, -1.0, -1.5, -2.0]
+    },
+    {
+      "name": "Podcast Voice",
+      "preamp": 0.0,
+      "bands": [0.0, -1.0, -2.0, -1.0, 0.0, 1.5, 2.5, 2.0, 1.0, 0.0]
+    }
+  ]
+}
