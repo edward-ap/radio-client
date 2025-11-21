@@ -76,6 +76,12 @@ func (a *App) buildSettingsRow(i int) fyne.CanvasObject {
 			p.MetadataURL = ""
 		}
 		p.URL = s
+		if newTrim == "" && strings.TrimSpace(p.Name) != "" {
+			p.Name = ""
+			if a.currentPresetIndex() == i {
+				a.setWindowTitleForName("")
+			}
+		}
 		if saveTimer != nil {
 			saveTimer.Stop()
 		}

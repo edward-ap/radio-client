@@ -200,6 +200,9 @@ func NewApp() *App {
 
 	app.buildUI()
 	app.restoreWindowPlacement()
+	if idx := app.currentPresetIndex(); idx >= 0 && idx < len(app.config.Presets) {
+		app.setWindowTitleForName(app.config.Presets[idx].Name)
+	}
 	if app.ticker != nil {
 		app.ticker.SetText("Initializing VLC…")
 	}
@@ -228,12 +231,14 @@ func NewApp() *App {
 			}
 		})
 		p.SetOnStation(func(name string) {
-			n := strings.TrimSpace(html.UnescapeString(name))
-			title := "MiniRadio"
-			if n != "" {
-				title = "MiniRadio — " + n
+			raw := strings.TrimSpace(html.UnescapeString(name))
+			idx := app.currentPresetIndex()
+			display := raw
+			if display == "" && idx >= 0 && idx < len(app.config.Presets) {
+				display = app.config.Presets[idx].Name
 			}
-			ui.CallOnMain(func() { w.SetTitle(title) })
+			app.setWindowTitleForName(display)
+			app.storePresetNameIfMissing(idx, raw)
 		})
 
 		// apply initial volume/mute after init
@@ -652,8 +657,8 @@ func (a *App) togglePlay() {
 			_ = a.eq.ApplyPresetName(a.player, name, customMap)
 		}
 	}
-	// Reset title to default; new stream may not provide station metadata
-	ui.CallOnMain(func() { a.w.SetTitle("MiniRadio") })
+	// Refresh the title with the stored preset name until metadata arrives.
+	a.setWindowTitleForCurrentPreset()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := a.player.Load(ctx, url); err != nil {
@@ -974,8 +979,8 @@ func (a *App) activatePreset(idx int) {
 	a.config.CurrentURL = p.URL
 	a.config.LastPreset = idx
 	_ = a.config.Save()
-	// reset window title to default; new station may not provide metadata
-	ui.CallOnMain(func() { a.w.SetTitle("MiniRadio") })
+	// Refresh title with stored station name; metadata might not arrive.
+	a.setWindowTitleForName(p.Name)
 	// sync drawer radios if open
 	if a.drawerShown {
 		a.silentUpdating = true
@@ -1010,6 +1015,49 @@ func nonEmpty(vals ...string) string {
 		}
 	}
 	return ""
+}
+
+func (a *App) setWindowTitleForName(name string) {
+	if a == nil || a.w == nil {
+		return
+	}
+	title := "MiniRadio"
+	if trimmed := strings.TrimSpace(name); trimmed != "" {
+		title = "MiniRadio - " + trimmed
+	}
+	ui.CallOnMain(func() { a.w.SetTitle(title) })
+}
+
+func (a *App) setWindowTitleForCurrentPreset() {
+	if a == nil {
+		return
+	}
+	if a.config == nil {
+		a.setWindowTitleForName("")
+		return
+	}
+	idx := a.currentPresetIndex()
+	if idx >= 0 && idx < len(a.config.Presets) {
+		a.setWindowTitleForName(a.config.Presets[idx].Name)
+		return
+	}
+	a.setWindowTitleForName("")
+}
+
+func (a *App) storePresetNameIfMissing(idx int, name string) {
+	if a == nil || a.config == nil {
+		return
+	}
+	clean := strings.TrimSpace(name)
+	if clean == "" || idx < 0 || idx >= len(a.config.Presets) {
+		return
+	}
+	p := &a.config.Presets[idx]
+	if strings.TrimSpace(p.Name) != "" {
+		return
+	}
+	p.Name = clean
+	_ = a.config.Save()
 }
 
 // currentPresetIndex returns index of the currently active preset (station) if known, else -1.
